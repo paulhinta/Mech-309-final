@@ -32,8 +32,8 @@ def df(r):
 #input parameters for newton's method
 eps = 0.001
 
-r1 = newton(f(x), df(x), 1.5, eps)
-r2 = newton(f(x), df(x), 4.25, eps)
+r1 = newton(f(x), df(x), 1.5, eps)          #r1 = 1.87527632324985
+r2 = newton(f(x), df(x), 4.25, eps)         #r2 = 4.69409122046058
 
 print("r_1: {:.3f}".format(r1))
 print("r_2: {:.3f}".format(r2))
