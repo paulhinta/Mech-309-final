@@ -8,22 +8,25 @@ TASK 5
 
 '''
 x = sp.Symbol('x')
+s = sp.Symbol('s')
 q1 = sp.Symbol('q1')
 
 r1 = 1.87527632324985
 
 '''
-First Integral
+First Integral, steps 1-3
 '''
-def f(x):
-    return (sin(r1*x)+sinh(r1*x) + (cos(r1*x)*cos(r1*x) - cosh(r1*x)*cosh(r1*x))/(sin(r1) + sinh(r1)))
+def phi(x):
+    return sin(r1*x) + sinh(r1*x) + ((cos(r1)+cosh(r1))/(sin(r1)+sinh(r1)))*(cos(r1*x)-cosh(r1*x))
 
-def g(x):
-    return (-sin(r1*x)+sinh(r1*x) + 2*(sin(r1*x)*sin(r1*x) - cos(r1*x)*cos(r1*x) + sinh(r1*x)*sinh(r1*x) + cosh(r1*x)*cosh(r1*x))/ (sin(r1) + sinh(r1)))
+def d2phi(x):
+    return -sin(r1*x) + sinh(r1*x) + ((cos(r1)+cosh(r1))/(sin(r1)+sinh(r1)))*(-cos(r1*x)-cosh(r1*x))
 
 def h(x):
-    return f(x)*g(x)
+    return phi(x)*d2phi(x)
 
+#STEP 3
+#custom trapezoid rule solver
 def trapezoid(x, n=10, a=0, b=1):
     const = (b-a)/(2*n)
 
@@ -39,18 +42,89 @@ def trapezoid(x, n=10, a=0, b=1):
 def integral(x, n=10):
     return q1*(r1**2)*trapezoid(x, n)
 
-y = integral(x, 1000)
+y = integral(x, 100)
 
 print(y)
 
 #CHECK: Integral
 #Formula for the online calculator:
-#(sin(15x/8) + sinh(15x/8) + (cos^2(15x/8) -cosh^2(15x/8))/(sin(15/8) + sinh(15/8)))(sinh(15x/8) - sin(15x/8) + (2sin^2(15/8x) -2cos^2(15x/8) + 2sinh^2(15x/8) + 2cosh^2(15/8x))/(sin(15/8) + sinh(15/8)))
-#online solution: 5.494730788809941
-#Trapezoid solution: 5.49692283891431 (with n=100)
-z = trapezoid(x, 100)
-print(z)
+#[sin(15x/8) + sinh(15x/8) + ((cos(15/8) + cosh(15/8))/(sin(15/8) + sinh(15/8)))(cos(15x/8) -cosh(15x/8))][-sin(15x/8) + sinh(15x/8) + ((cos(15/8) + cosh(15/8))/(sin(15/8) + sinh(15/8)))(-cos(15x/8) -cosh(15x/8)])*(225/64)
+#online solution: −1.000055499072578 OR -3.515820113927032*q1
+#Trapezoid solution: -0.999816351571781 OR -3.51601545922326*q1 (with n=100)
+# z = trapezoid(x, 100)
+# print(z)
 
 '''
-Second Integral
+Second Integral, steps 4-5
 '''
+def k(x,s):
+    return (phi(x))*(cos(q1*phi(x) - q1*phi(s)))
+
+k = 100*k(s,x)
+
+#STEP 5
+#custom trapezoid rule solver in 2d
+#variables of integration: x, s
+def double_trap(func, x_low, x_high, s_low, s_high, n=10):
+    #first pass in ds
+    const_s = (s_high-s_low)/(2*n)
+
+    ds = (s_high-s_low)/n
+
+    total_s = func.subs(s, s_low) + func.subs(s, s_high)
+
+    for i in range(1, n):
+        total_s += 2*(func.subs(s, s_low + ds*i))
+
+    total_s = const_s*total_s
+
+    #now total_s is a representation of the first integral evaluated between the upper & lower bounds
+    #total_s is a function of x & q1
+
+    #second pass in dx
+    const_x = (x_high-x_low)/(2*n)
+
+    dx = (x_high-x_low)/n
+
+    total_x = total_s.subs(x, x_low) + total_s.subs(x,x_high)
+
+    for i in range(1, n):
+        total_x += 2*(total_s.subs(x, x_low + dx*i))
+
+    total_x = total_x*const_x
+
+    return total_x
+
+print("SECOND INTEGRAL \n")
+
+z = double_trap(k, 0, 1, x, 1, 10)
+print(z)
+
+#sanity check
+# test = (s**2)*x
+# test_result = double_trap(test, 0, 1, x, 3, 10)
+# print(test_result)
+#RESULT: 4.44309695000000 (with n=10) 
+#result from symbolab: 4.43333...
+#the double trapezoid function works well
+
+'''
+f(q1), steps 6-7
+'''
+
+def f_q():
+    return y + z
+
+fq = f_q()
+
+q = np.arange(-10,10,0.05)      #400 data points
+p1 = []                         #f(q) values the points
+
+for point in q:
+    p1.append(fq.subs(q1, float(point)))    #evaluate f(q_1) at that point
+
+p1 = np.array(p1)
+
+mplot.plot(q, p1, 'k')
+mplot.title("Plot of f(q_1)")
+mplot.show()
