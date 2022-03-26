@@ -1,6 +1,7 @@
+from cProfile import label
 import sympy as sp      #math library to represent functions, we will write our own problem solving expressions
 #from sympy.plotting import plot
-from sympy import cos, cosh, sin, sinh
+from sympy import cos, cosh, sin, sinh, sqrt
 import numpy as np
 import matplotlib.pyplot as mplot
 '''
@@ -120,11 +121,56 @@ fq = f_q()
 q = np.arange(-10,10,0.05)      #400 data points
 p1 = []                         #f(q) values the points
 
+#fixed point
+fixed_p = []        #f(q) function
+
 for point in q:
     p1.append(fq.subs(q1, float(point)))    #evaluate f(q_1) at that point
 
+    fixed_p.append(z.subs(q1, float(point))/3.51601545922326)
+
+
 p1 = np.array(p1)
 
+fixed_p = np.array(fixed_p)
+
 mplot.plot(q, p1, 'k')
+mplot.grid(color='k', linestyle='--', linewidth=0.5)
 mplot.title("Plot of f(q_1)")
 mplot.show()
+'''
+TASK 6
+'''
+
+#mplot.plot(q, p1, 'k', label='f(q_1)')
+mplot.plot(q, fixed_p, label='g(q_1)')
+mplot.plot(q, q, 'r', label='q_1')
+mplot.grid(color='k', linestyle='--', linewidth=0.5)
+mplot.axvline(x=2.75, ymin=0.35, ymax=0.7, color='g', linestyle=':', linewidth=2)
+mplot.axvline(x=4.5, ymin=0.35, ymax=0.7, color='g', linestyle=':', linewidth=2)
+mplot.axhline(y=2.75, xmin=0.35, xmax=0.7, color='g', linestyle=':', linewidth=2)
+mplot.axhline(y=4.5, xmin=0.35, xmax=0.7, color='g', linestyle=':', linewidth=2)
+mplot.xlim(1, 6)
+mplot.ylim(1,6)
+mplot.legend()
+mplot.show()
+
+'''
+TASK 7
+Numerical approximation of q_1 using fixed-point iteration
+
+y & z from before are the g & (f-g) functions
+'''
+def secant(r0, r1, e):
+    r = r1 - fq.subs(q1, r1)*((r1-r0)/(fq.subs(q1,r1) - fq.subs(q1,r0)))
+
+    while abs(r-r1) > e:
+        r0 = r1
+        r1 = r
+        r = r1 - fq.subs(q1, r1)*((r1-r0)/(fq.subs(q1,r1) - fq.subs(q1,r0)))
+
+    return r
+
+print(secant(2.75, 3, 0.001))
+
+#result: q1=3.27627371801516
