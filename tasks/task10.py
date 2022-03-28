@@ -107,8 +107,8 @@ def psi_h(x):
     return q1*phi(x, r1) + q2*phi(x,r2)
 
 def d2psi_h(x):
-    return q1*d2phi(x, r1) + q*d2phi(x, r2)
+    return q1*d2phi(x, r1) + q2*d2phi(x, r2)
 
 print(psi_h(x))
-
+print("\n")
 print(d2psi_h(x))
