@@ -7,38 +7,40 @@ import matplotlib.pyplot as mplot
 #STEP 1: Find the second root q_2
 
 x = sp.Symbol('x')
-q = sp.Symbol('q')
 s = sp.Symbol('s')
+q1 = sp.Symbol('q1')
+q2 = sp.Symbol('q2')
 
 r1 = 1.87527632324985
 r2 = 4.69409122046058
-
-q1 = 4.26275024501704
-q2 = 0
 
 def phi(x, r):
     return (sin(r*x) + sinh(r*x) + ((cos(r)+cosh(r))/(sin(r)+sinh(r)))*(cos(r*x)-cosh(r*x)))
 
 def d2phi(x, r):
-    return (-sin(r*x) + sinh(r*x) + ((cos(r)+cosh(r))/(sin(r)+sinh(r)))*(-cos(r*x)-cosh(r*x)))
+    return (r**2)*(-sin(r*x) + sinh(r*x) + ((cos(r)+cosh(r))/(sin(r)+sinh(r)))*(-cos(r*x)-cosh(r*x)))
 
-def h(x, r):
-    return (phi(x,r)*d2phi(x,r))
+def psi_h(x):
+    return q1*phi(x, r1) + q2*phi(x,r2)
 
-def trapezoid(x, r, n=10, a=0, b=1):
+def d2psi_h(x):
+    return q1*d2phi(x, r1) + q2*d2phi(x, r2)
+
+#function to single integrate
+def h(x, r, q):
+    return q*(phi(x,r)*d2psi_h(x))
+
+def trapezoid(x, r, q, n=10, a=0, b=1):
     const = (b-a)/(2*n)
 
     dx = (b-a)/(n)
 
-    total = h(a, r) + h(b, r)
+    total = h(a, r, q) + h(b, r, q)
 
     for i in range(1, n):
-        total += 2*h(a + dx*i, r)
+        total += 2*h(a + dx*i, r, q)
 
     return const*total
-
-def integral(x, r, q, n=10):
-    return q*(r**2)*trapezoid(x, r, n)
 
 def double_trap(func, x_low, x_high, s_low, s_high, n=10):
     #first pass in ds
@@ -67,48 +69,6 @@ def double_trap(func, x_low, x_high, s_low, s_high, n=10):
 
     return total_x
 
-def k(x,s,r,q):
-    return (phi(x,r))*(cos(q*phi(x,r) - q*phi(s,r)))
-
-#set up equation for q2 using root 2
-y2 = integral(x, r2, q, 100)
-k = 100*k(x,s,r2,q)
-z2 = double_trap(k, 0, 1, x, 1, 10)
-f_q2 = y2 + z2
-
-qs = np.arange(-5,5,0.05)        #200 data points, only take +ve root
-p2 = []                         #f(q) values the points
-
-for point in qs:
-    p2.append(f_q2.subs(q, float(point)))    #evaluate f(q_2) at that point
-
-p2 = np.array(p2)
-
-def secant(r0, r1, fq, q, e=0.001):
-    r = r1 - fq.subs(q, r1)*((r1-r0)/(fq.subs(q,r1) - fq.subs(q,r0)))
-
-    while abs(r-r1) > e:
-        r0 = r1
-        r1 = r
-        r = r1 - fq.subs(q, r1)*((r1-r0)/(fq.subs(q,r1) - fq.subs(q,r0)))
-
-    return r
-
-mplot.plot(qs, p2)
-mplot.show()
-
-q2 = secant(0.5, 1, f_q2, q)        #0.268362029434715
-
-'''
-2D EXPRESSIONS
-'''
-
-def psi_h(x):
-    return q1*phi(x, r1) + q2*phi(x,r2)
-
-def d2psi_h(x):
-    return q1*d2phi(x, r1) + q2*d2phi(x, r2)
-
-print(psi_h(x))
-print("\n")
-print(d2psi_h(x))
+#function to double integrate
+def k(x,s,r):
+    return (phi(x,r))*(cos(psi_h(x) - psi_h(s)))
