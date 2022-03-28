@@ -61,7 +61,7 @@ Second Integral, steps 4-5
 def k(x,s):
     return (phi(x))*(cos(q1*phi(x) - q1*phi(s)))
 
-k = 100*k(s,x)
+k = 100*k(x,s)
 
 #STEP 5
 #custom trapezoid rule solver in 2d

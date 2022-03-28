@@ -42,7 +42,7 @@ y = integral(x, 100)
 def k(x,s):
     return (phi(x))*(cos(q1*phi(x) - q1*phi(s)))
 
-k = F*k(s,x)
+k = F*k(x,s)
 
 #custom trapezoid rule solver in 2d
 #variables of integration: x, s
