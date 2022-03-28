@@ -1,4 +1,3 @@
-from cProfile import label
 import sympy as sp      #math library to represent functions, we will write our own problem solving expressions
 #from sympy.plotting import plot
 from sympy import cos, cosh, sin, sinh, sqrt
@@ -13,6 +12,7 @@ s = sp.Symbol('s')
 q1 = sp.Symbol('q1')
 
 r1 = 1.87527632324985
+#r1 derived in previous task
 
 '''
 First Integral, steps 1-3
@@ -112,7 +112,6 @@ print(z)
 '''
 f(q1), steps 6-7
 '''
-
 def f_q():
     return y + z
 
@@ -171,6 +170,36 @@ def secant(r0, r1, e):
 
     return r
 
-print(secant(2.75, 3, 0.001))
+root = secant(2.75, 3, 0.001)
+
+print(root)
 
 #result: q1=3.27627371801516
+
+#Convergence of integral function
+ns = [1, 3, 5, 10, 15, 20]
+solss = []
+erss = []
+
+for i in ns:
+    sol = (trapezoid(x, i, 0, 1))*r1**2
+    solss.append(float(sol))
+
+    error = float(abs((sol - y.subs(q1, 1))/y.subs(q1, 1)))
+    erss.append(error)
+
+ns = np.array(ns)
+solss = np.array(solss)
+erss = np.array(erss)
+
+mplot.plot(ns, solss, '--*')
+mplot.title("Convergence of Single Integral Trapezoid Rule Approximation")
+mplot.xlabel("Number of iterations, n")
+mplot.ylabel("Integral Approximation")
+mplot.show()
+
+mplot.plot(ns, erss, '--*')
+mplot.title("Convergence of Single Integral Trapezoid Rule Approximation")
+mplot.xlabel("Number of iterations, n")
+mplot.ylabel("Relative error")
+mplot.show()
