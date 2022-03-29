@@ -45,8 +45,6 @@ def integral(x, n=10):
 
 y = integral(x, 100)
 
-print(y)
-
 #CHECK: Integral
 #Formula for the online calculator:
 #[sin(15x/8) + sinh(15x/8) + ((cos(15/8) + cosh(15/8))/(sin(15/8) + sinh(15/8)))(cos(15x/8) -cosh(15x/8))][-sin(15x/8) + sinh(15x/8) + ((cos(15/8) + cosh(15/8))/(sin(15/8) + sinh(15/8)))(-cos(15x/8) -cosh(15x/8)])*(225/64)
@@ -59,7 +57,7 @@ print(y)
 Second Integral, steps 4-5
 '''
 def k(x,s):
-    return (phi(x))*(cos(q1*phi(x) - q1*phi(s)))
+    return (phi(x))*(cos(q1*phi(x) - q1*phi(s)))        #psi(x) = q*phi(x)
 
 k = 100*k(x,s)
 
@@ -96,10 +94,10 @@ def double_trap(func, x_low, x_high, s_low, s_high, n=10):
 
     return total_x
 
-print("SECOND INTEGRAL \n")
+#print("SECOND INTEGRAL \n")
 
 z = double_trap(k, 0, 1, x, 1, 10)
-print(z)
+#print(z)
 
 #sanity check
 # test = (s**2)*x

@@ -7,7 +7,7 @@ import matplotlib.pyplot as mplot
 TASK 8
 '''
 r1 = 1.87527632324985
-q1 = 4.26275024501704
+q1 = 4.26275024501704       #3.27 
 #r_1 & q_1 value derived in task 7
 def psi(x):
     return q1*(sin(r1*x) + sinh(r1*x) + ((cos(r1)+cosh(r1))/(sin(r1)+sinh(r1)))*(cos(r1*x)-cosh(r1*x)))
