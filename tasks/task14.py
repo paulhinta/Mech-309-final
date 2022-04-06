@@ -31,7 +31,7 @@ def d2psi_h(x):
 def h(x, r, q):
     return (phi(x,r)*d2psi_h(x))
 
-def trapezoid(x, r, q, n=10, a=0, b=1):
+def trapezoid(x, r, q, n=20, a=0, b=1):
     const = (b-a)/(2*n)
 
     dx = (b-a)/(n)
@@ -270,13 +270,3 @@ mplot.title("Longitudinal deflection at various positions along the beam with q1
 mplot.show()
 
 plot3d_parametric_line(x, dx_t, dx_l, (x, 0, 1),  title="Transverse & Longitudonal deflection of the Beam", xlabel="Position along beam [m]", ylabel="dx_lverse dx_t [m]", zlabel="Longitudinal dx_t [m]")
-
-ith_term = [1,2,3]
-q_ith = [4.29105998838015, abs(-0.8336), abs(-0.01233278)]
-
-mplot.plot(ith_term, q_ith)
-mplot.xlabel("Number of q terms")
-mplot.ylabel("Absolute value of q_ith term")
-mplot.grid(color='k', linestyle='--', linewidth=0.5)
-mplot.title("Approximation of Convergence of psi(x) using i q terms")
-mplot.show()
