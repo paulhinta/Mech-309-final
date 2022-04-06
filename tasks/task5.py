@@ -3,6 +3,7 @@ import sympy as sp      #math library to represent functions, we will write our 
 from sympy import cos, cosh, sin, sinh, sqrt
 import numpy as np
 import matplotlib.pyplot as mplot
+from sympy.plotting import plot
 '''
 TASK 5
 
@@ -44,6 +45,8 @@ def integral(x, n=10):
     return q1*(r1**2)*trapezoid(x, n)
 
 y = integral(x, 100)
+
+# plot(y)
 
 #CHECK: Integral
 #Formula for the online calculator:
@@ -96,8 +99,9 @@ def double_trap(func, x_low, x_high, s_low, s_high, n=10):
 
 #print("SECOND INTEGRAL \n")
 
-z = double_trap(k, 0, 1, x, 1, 10)
-#print(z)
+z = double_trap(k, 0, 1, x, 1, 20)
+# print(z)
+plot(z)
 
 #sanity check
 # test = (s**2)*x
@@ -106,7 +110,6 @@ z = double_trap(k, 0, 1, x, 1, 10)
 #RESULT: 4.44309695000000 (with n=10) 
 #result from symbolab: 4.43333...
 #the double trapezoid function works well
-
 '''
 f(q1), steps 6-7
 '''
@@ -126,7 +129,6 @@ for point in q:
 
     fixed_p.append(z.subs(q1, float(point))/3.51601545922326)
 
-
 p1 = np.array(p1)
 
 fixed_p = np.array(fixed_p)
@@ -143,10 +145,10 @@ TASK 6
 mplot.plot(q, fixed_p, label='g(q_1)')
 mplot.plot(q, q, 'r', label='q_1')
 mplot.grid(color='k', linestyle='--', linewidth=0.5)
-mplot.axvline(x=2.75, ymin=0.35, ymax=0.7, color='g', linestyle=':', linewidth=2)
-mplot.axvline(x=4.5, ymin=0.35, ymax=0.7, color='g', linestyle=':', linewidth=2)
-mplot.axhline(y=2.75, xmin=0.35, xmax=0.7, color='g', linestyle=':', linewidth=2)
-mplot.axhline(y=4.5, xmin=0.35, xmax=0.7, color='g', linestyle=':', linewidth=2)
+mplot.axvline(x=4, ymin=0.6, ymax=0.7, color='g', linestyle=':', linewidth=2)
+mplot.axvline(x=4.5, ymin=0.6, ymax=0.7, color='g', linestyle=':', linewidth=2)
+mplot.axhline(y=4, xmin=0.6, xmax=0.7, color='g', linestyle=':', linewidth=2)
+mplot.axhline(y=4.5, xmin=0.6, xmax=0.7, color='g', linestyle=':', linewidth=2)
 mplot.xlim(1, 6)
 mplot.ylim(1,6)
 mplot.legend()
@@ -168,7 +170,7 @@ def secant(r0, r1, e):
 
     return r
 
-root = secant(2.75, 3, 0.001)
+root = secant(4, 4.1, 0.001)
 
 print(root)
 

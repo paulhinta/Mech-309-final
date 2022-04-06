@@ -73,7 +73,7 @@ def double_trap(func, x_low, x_high, s_low, s_high, n=10):
 
     return total_x
 
-z = double_trap(k, 0, 1, x, 1, 10)
+z = double_trap(k, 0, 1, x, 1, 20)
 
 #return the sum of y + z, substitute the specific value for F_N
 def psi(val):
@@ -111,5 +111,6 @@ qs = np.array(qs)
 mplot.plot(Fs, psi_s)
 mplot.xlabel("Transverse Force, F_N")
 mplot.ylabel("Angle of Rotation @ x=L")
+mplot.grid(color='k', linestyle='--', linewidth=0.5)
 mplot.title("Angle of Rotation at x=L vs the Transverse Force of a 1-D Beam")
 mplot.show()
