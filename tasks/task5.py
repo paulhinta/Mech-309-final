@@ -1,4 +1,5 @@
-import sympy as sp      #math library to represent functions, we will write our own problem solving expressions
+import sympy as sp
+#NOTED: This is a python math library to represent functions, we will write our own problem solving expressions
 #from sympy.plotting import plot
 from sympy import cos, cosh, sin, sinh, sqrt
 import numpy as np
@@ -14,7 +15,6 @@ q1 = sp.Symbol('q1')
 
 r1 = 1.87527632324985
 #r1 derived in previous task
-
 '''
 First Integral, steps 1-3
 '''

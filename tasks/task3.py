@@ -1,4 +1,5 @@
-import sympy as sp      #math library to represent functions, we will write our own problem solving expressions
+import sympy as sp
+#NOTED: This is a python math library to represent functions, we will write our own problem solving expressions
 #from sympy.plotting import plot
 from sympy import cos, cosh, sin, sinh
 import numpy as np

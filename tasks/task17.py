@@ -1,6 +1,5 @@
 import sympy as sp      #math library to represent functions, we will write our own problem solving expressions
-from sympy.plotting import plot as plt
-from sympy import cos, cosh, sin, sinh, simplify
+from sympy import cos, cosh, sin, sinh
 import numpy as np
 import matplotlib.pyplot as mplot
 
