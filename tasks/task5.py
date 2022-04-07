@@ -1,19 +1,13 @@
-import sympy as sp
-#NOTED: This is a python math library to represent functions, we will write our own problem solving expressions
-#from sympy.plotting import plot
-from sympy import cos, cosh, sin, sinh, sqrt
+from numpy import cos, cosh, sin, sinh
 import numpy as np
-import matplotlib.pyplot as mplot
-from sympy.plotting import plot
+import matplotlib.pyplot as plt
+import time
 '''
 TASK 5
 
 '''
-x = sp.Symbol('x')
-s = sp.Symbol('s')
-q1 = sp.Symbol('q1')
-
 r1 = 1.87527632324985
+
 #r1 derived in previous task
 '''
 First Integral, steps 1-3
@@ -22,14 +16,12 @@ def phi(x):
     return sin(r1*x) + sinh(r1*x) + ((cos(r1)+cosh(r1))/(sin(r1)+sinh(r1)))*(cos(r1*x)-cosh(r1*x))
 
 def d2phi(x):
-    return -sin(r1*x) + sinh(r1*x) + ((cos(r1)+cosh(r1))/(sin(r1)+sinh(r1)))*(-cos(r1*x)-cosh(r1*x))
+    return (r1**2)*(-sin(r1*x) + sinh(r1*x) + ((cos(r1)+cosh(r1))/(sin(r1)+sinh(r1)))*(-cos(r1*x)-cosh(r1*x)))
 
 def h(x):
     return phi(x)*d2phi(x)
 
-#STEP 3
-#custom trapezoid rule solver
-def trapezoid(x, n=10, a=0, b=1):
+def trapezoid(n=10, a=0, b=1):
     const = (b-a)/(2*n)
 
     dx = (b-a)/(n)
@@ -41,165 +33,153 @@ def trapezoid(x, n=10, a=0, b=1):
 
     return const*total
 
-def integral(x, n=10):
-    return q1*(r1**2)*trapezoid(x, n)
+# print("Numpy -- First integral (linear component)")
+# start = time.time()
+y = trapezoid(100)
 
-y = integral(x, 100)
+n=100
 
-# plot(y)
+qs = np.arange(-5, 5, (5 - (-5))/n)          #100 data points for now
+xs = np.arange(0, 1, (1-0)/n)                #100 data points
 
-#CHECK: Integral
-#Formula for the online calculator:
-#[sin(15x/8) + sinh(15x/8) + ((cos(15/8) + cosh(15/8))/(sin(15/8) + sinh(15/8)))(cos(15x/8) -cosh(15x/8))][-sin(15x/8) + sinh(15x/8) + ((cos(15/8) + cosh(15/8))/(sin(15/8) + sinh(15/8)))(-cos(15x/8) -cosh(15x/8)])*(225/64)
-#online solution: −1.000055499072578 OR -3.515820113927032*q1
-#Trapezoid solution: -0.999816351571781 OR -3.51601545922326*q1 (with n=100)
-# z = trapezoid(x, 100)
-# print(z)
+first_integral = []
 
-'''
-Second Integral, steps 4-5
-'''
-def k(x,s):
-    return (phi(x))*(cos(q1*phi(x) - q1*phi(s)))        #psi(x) = q*phi(x)
+# print(qs)
+# print(xs)
 
-k = 100*k(x,s)
+def integrand(x0, q0, s0):
+    return phi(x0)*cos(q0*(phi(x0) - phi(s0)))
 
-#STEP 5
-#custom trapezoid rule solver in 2d
-#variables of integration: x, s
-def double_trap(func, x_low, x_high, s_low, s_high, n=10):
-    #first pass in ds
-    const_s = (s_high-s_low)/(2*n)
+for q in qs:
+    out = []
+    for x in xs:
+        dx = (1-x)/n
 
-    ds = (s_high-s_low)/n
+        total = integrand(x, q, x) + integrand(x, q, 1)
 
-    total_s = func.subs(s, s_low) + func.subs(s, s_high)
+        s_values = np.arange(x+dx, 1, dx)
 
-    for i in range(1, n):
-        total_s += 2*(func.subs(s, s_low + ds*i))
+        for s in s_values:
+            total += 2*integrand(x, q, s)
 
-    total_s = const_s*total_s
+        total = total*dx/2
 
-    #now total_s is a representation of the first integral evaluated between the upper & lower bounds
-    #total_s is a function of x & q1
+        out.append(total)
+    
+    first_integral.append(out)
 
-    #second pass in dx
-    const_x = (x_high-x_low)/(2*n)
+# for q_list in first_integral:
+#     print(q_list)
 
-    dx = (x_high-x_low)/n
+second_integral = []
+task6_LHS = []
+task7 = []
 
-    total_x = total_s.subs(x, x_low) + total_s.subs(x,x_high)
+j=0
+dq = 10/n
+for q in range(n):
+    q0 = -5 + j*dq
 
-    for i in range(1, n):
-        total_x += 2*(total_s.subs(x, x_low + dx*i))
+    lst = first_integral[q]
+    dx = 1/n
+    total = lst[0] + lst[n-1]
 
-    total_x = total_x*const_x
+    for i in range(1, n-2):
+        total += lst[i]*2
 
-    return total_x
+    out = 100*(total*dx/2)
 
-#print("SECOND INTEGRAL \n")
+    second_integral.append(out + y*q0)
+    if q0 >= 0:
+        task6_LHS.append(-out/y)
+        task7.append(out + y*q0)
+    j+=1
 
-z = double_trap(k, 0, 1, x, 1, 20)
-# print(z)
-plot(z)
+plt.plot(qs, second_integral)
+plt.grid(color='k', linestyle='--', linewidth=0.5)
+plt.title("Plot of f(q_1)")
+plt.show()
 
-#sanity check
-# test = (s**2)*x
-# test_result = double_trap(test, 0, 1, x, 3, 10)
-# print(test_result)
-#RESULT: 4.44309695000000 (with n=10) 
-#result from symbolab: 4.43333...
-#the double trapezoid function works well
-'''
-f(q1), steps 6-7
-'''
-def f_q():
-    return y + z
-
-fq = f_q()
-
-q = np.arange(-10,10,0.05)      #400 data points
-p1 = []                         #f(q) values the points
-
-#fixed point
-fixed_p = []        #f(q) function
-
-for point in q:
-    p1.append(fq.subs(q1, float(point)))    #evaluate f(q_1) at that point
-
-    fixed_p.append(z.subs(q1, float(point))/3.51601545922326)
-
-p1 = np.array(p1)
-
-fixed_p = np.array(fixed_p)
-
-mplot.plot(q, p1, 'k')
-mplot.grid(color='k', linestyle='--', linewidth=0.5)
-mplot.title("Plot of f(q_1)")
-mplot.show()
 '''
 TASK 6
 '''
-
-#mplot.plot(q, p1, 'k', label='f(q_1)')
-mplot.plot(q, fixed_p, label='g(q_1)')
-mplot.plot(q, q, 'r', label='q_1')
-mplot.grid(color='k', linestyle='--', linewidth=0.5)
-mplot.axvline(x=4, ymin=0.6, ymax=0.7, color='g', linestyle=':', linewidth=2)
-mplot.axvline(x=4.5, ymin=0.6, ymax=0.7, color='g', linestyle=':', linewidth=2)
-mplot.axhline(y=4, xmin=0.6, xmax=0.7, color='g', linestyle=':', linewidth=2)
-mplot.axhline(y=4.5, xmin=0.6, xmax=0.7, color='g', linestyle=':', linewidth=2)
-mplot.xlim(1, 6)
-mplot.ylim(1,6)
-mplot.legend()
-mplot.show()
+qs = np.arange(0,5,10/n)
+plt.plot(qs, task6_LHS)
+plt.plot(qs, qs, 'r')
+plt.grid(color='k', linestyle='--', linewidth=0.5)
+plt.title("Fixed-point quadrature scheme")
+plt.show()
 
 '''
 TASK 7
-Numerical approximation of q_1 using fixed-point iteration
-
-y & z from before are the g & (f-g) functions
 '''
+#Solve by the secant method
+#first, interpolate 100 new points between each set of points for a total of 10000 points -> gives distance between points = 0.001
+x7 = []
+y7 = []
+
+dq = 10/(n**2)
+
+for i in range(int(n/2)-1):
+    q = qs[i]
+    x7.append(q)
+    y0 = task7[i]
+    y1 = task7[i+1]
+    sl = (y1-y0)*(n/10)
+    y7.append(y0)
+
+    for j in range(1,n):
+        x7.append(q+j*dq)
+        y7.append(y0+j*dq*sl)
+
+plt.plot(np.array(x7), np.array(y7))
+plt.grid(color='k', linestyle='--', linewidth=0.5)
+plt.show()
+
 def secant(r0, r1, e):
-    r = r1 - fq.subs(q1, r1)*((r1-r0)/(fq.subs(q1,r1) - fq.subs(q1,r0)))
+    #Finds the closest value in x7 to r, assigns r1 that value
+    if r0 in x7:
+        r0_ind = x7.index(r0)
+    else: 
+        r0_ind = min(enumerate(x7), key=lambda x: abs(r0 - x[1]))[0]
+
+    if r1 in x7:
+        r1_ind = x7.index(r1)
+    else: 
+        r1_ind = min(enumerate(x7), key=lambda x: abs(r1 - x[1]))[0]
+
+    fr0 = y7[r0_ind]
+    fr1 = y7[r1_ind]
+
+    r = r1 - fr1*(r1-r0)/(fr1-fr0)
 
     while abs(r-r1) > e:
         r0 = r1
-        r1 = r
-        r = r1 - fq.subs(q1, r1)*((r1-r0)/(fq.subs(q1,r1) - fq.subs(q1,r0)))
+        if r in x7:
+            r1 = r
+        else:
+            r1 = min(enumerate(x7), key=lambda x: abs(r - x[1]))[1]
+        
+
+        if r0 in x7:
+            r0_ind = x7.index(r0)
+        else: 
+            r0_ind = min(enumerate(x7), key=lambda x: abs(r0 - x[1]))[0]
+
+        if r1 in x7:
+            r1_ind = x7.index(r1)
+        else: 
+            r1_ind = min(enumerate(x7), key=lambda x: abs(r1 - x[1]))[0]
+
+        fr0 = y7[r0_ind]
+        fr1 = y7[r1_ind]
+
+        r = r1 - fr1*(r1-r0)/(fr1-fr0)
 
     return r
 
-root = secant(4, 4.1, 0.001)
+print(secant(4, 4.1, 0.001))
 
-print(root)
-
-#result: q1=3.27627371801516
-
-#Convergence of integral function
-ns = [1, 3, 5, 10, 15, 20]
-solss = []
-erss = []
-
-for i in ns:
-    sol = (trapezoid(x, i, 0, 1))*r1**2
-    solss.append(float(sol))
-
-    error = float(abs((sol - y.subs(q1, 1))/y.subs(q1, 1)))
-    erss.append(error)
-
-ns = np.array(ns)
-solss = np.array(solss)
-erss = np.array(erss)
-
-mplot.plot(ns, solss, '--*')
-mplot.title("Convergence of Single Integral Trapezoid Rule Approximation")
-mplot.xlabel("Number of iterations, n")
-mplot.ylabel("Integral Approximation")
-mplot.show()
-
-mplot.plot(ns, erss, '--*')
-mplot.title("Convergence of Single Integral Trapezoid Rule Approximation")
-mplot.xlabel("Number of iterations, n")
-mplot.ylabel("Relative error")
-mplot.show()
+'''
+q1 = 4.299218368349152
+'''

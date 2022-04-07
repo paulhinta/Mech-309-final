@@ -1,73 +1,69 @@
-from pandas import array
-import sympy as sp      #math library to represent functions, we will write our own problem solving expressions
-#from sympy.plotting import plot
-from sympy import cos, cosh, sin, sinh, sqrt
+from numpy import cos, cosh, sin, sinh
 import numpy as np
-import matplotlib.pyplot as mplot
-from sympy.plotting import plot3d_parametric_line
+import matplotlib.pyplot as plt
+
+import time
 '''
 TASK 8
 '''
 r1 = 1.87527632324985
-q1 = 4.29105998838015       #3.27 
-#r_1 & q_1 value derived in task 7
-def psi(x):
-    return q1*(sin(r1*x) + sinh(r1*x) + ((cos(r1)+cosh(r1))/(sin(r1)+sinh(r1)))*(cos(r1*x)-cosh(r1*x)))
+q1 = 4.299218368349152
 
-def trans_trapezoid(n=10, a=0, b=1):
-    const = (b-a)/(2*n)
+#r1 and q1 derived in previous task
 
-    dx = (b-a)/(n)
+def psi(s):
+    return q1*(sin(r1*s) + sinh(r1*s) + ((cos(r1)+cosh(r1))/(sin(r1)+sinh(r1)))*(cos(r1*s)-cosh(r1*s)))
+
+def trans_trapezoid(b=1, n=100):
+    a=0
+    const = (b-a)/n
+    dx = const/2
 
     total = sin(psi(a)) + sin(psi(b))
 
     for i in range(1, n):
-        total += 2*sin(psi(a + dx*i))
+        total += 2*sin(psi(a+i*dx))
 
     return const*total
 
-def long_trapezoid(n=10, a=0, b=1):
-    const = (b-a)/(2*n)
+def long_trapezoid(b=1, n=100):
+    a=0
+    const = (b-a)/n
+    dx = const/2
 
-    dx = (b-a)/(n)
-
-    total = sin(psi(a)) + sin(psi(b))
+    total = cos(psi(a)) + cos(psi(b))
 
     for i in range(1, n):
-        total += 2*sin(psi(a + dx*i))
+        total += 2*cos(psi(a+i*dx))
 
-    return const*total -x
+    return const*total
 
-x = sp.Symbol("x")
-s = sp.Symbol("s")
-F = sp.Symbol("F")
+xs = np.arange(0, 1.01, 0.01)   #101 data points
+trans_deflection = []
+long_deflection = []
 
-trans = trans_trapezoid(100, 0, x)
-long = long_trapezoid(100, 0, x)
+for x in xs:
+    trans_deflection.append(trans_trapezoid(x))
+    long_deflection.append(long_trapezoid(x) - x)
 
-xs = np.arange(0, 1, 0.01)      #100 data points
-ws = []
-wl = []
+plt.plot(xs, np.array(trans_deflection))
+plt.xlabel("Position along the beam, x [m]")
+plt.ylabel("Transverse deflection of the beam, w(x) [m]")
+plt.grid(color='k', linestyle='--', linewidth=0.5)
+plt.title("Transverse deflection at various positions along the beam")
+plt.show()
 
-for i in xs:
-    ws.append(float(trans.subs(x, i)))
-    wl.append(float(long.subs(x,i)))
+plt.plot(xs, np.array(long_deflection))
+plt.xlabel("Position along the beam, x [m]")
+plt.ylabel("Longitudinal deflection of the beam, u(x) [m]")
+plt.grid(color='k', linestyle='--', linewidth=0.5)
+plt.title("Longitudinal deflection at various positions along the beam")
+plt.show()
 
-ws = np.array(ws)
-wl = np.array(wl)
-
-mplot.plot(xs, ws)
-mplot.xlabel("Position along the beam, x [m]")
-mplot.ylabel("Transverse deflection of the beam, w(x) [m]")
-mplot.grid(color='k', linestyle='--', linewidth=0.5)
-mplot.title("Transverse deflection at various positions along the beam")
-mplot.show()
-
-mplot.plot(xs, wl)
-mplot.xlabel("Position along the beam, x [m]")
-mplot.ylabel("Longitudinal deflection of the beam, w(x) [m]")
-mplot.grid(color='k', linestyle='--', linewidth=0.5)
-mplot.title("Longitudinal deflection at various positions along the beam")
-mplot.show()
-
-plot3d_parametric_line(x, trans, long, (x, 0, 1),  title="Transverse & Longitudonal Deflection of the Beam", xlabel="Position along beam [m]", ylabel="Transverse Deflection [m]", zlabel="Longitudinal Deflection [m]")
+ax = plt.figure().add_subplot(projection='3d')
+ax.plot(xs, long_deflection, trans_deflection, label="overall deflection of the beam")
+ax.set_xlabel("Position along the beam, x [m]")
+ax.set_zlabel("w(x) [m]")
+ax.set_ylabel("u(x) [m]")
+ax.legend()
+plt.show()
