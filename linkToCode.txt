@@ -1,0 +1,6 @@
+'''
+please follow this link to our public Github repository to see the code that we used in this project:
+https://github.com/paulhinta/Mech-309-final
+'''
+
+If there are any issues, please contact Paul Hinta

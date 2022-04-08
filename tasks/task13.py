@@ -22,25 +22,25 @@ def psi_h(s, qi, qj, ri, rj):
 #deflection is an integral function of x in s
 def trans_trapezoid(b=1, n=100):
     a=0
-    const = (b-a)/n
-    dx = const/2
+    ds = (b-a)/n
+    const = ds/2
 
     total = sin(psi_h(a, q1, q2, r1, r2)) + sin(psi_h(b, q1, q2, r1, r2))
 
     for i in range(1, n):
-        total += 2*sin(psi_h(a+i*dx, q1, q2, r1, r2))
+        total += 2*sin(psi_h(a+i*ds, q1, q2, r1, r2))
 
     return const*total
 
 def long_trapezoid(b=1, n=100):
     a=0
-    const = (b-a)/n
-    dx = const/2
+    ds = (b-a)/n
+    const = ds/2
 
     total = cos(psi_h(a,q1,q2,r1,r2)) + cos(psi_h(b,q1,q2,r1,r2))
 
     for i in range(1, n):
-        total += 2*cos(psi_h(a+i*dx,q1,q2,r1,r2))
+        total += 2*cos(psi_h(a+i*ds,q1,q2,r1,r2))
 
     return const*total
 

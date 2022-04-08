@@ -23,25 +23,25 @@ def psi(s, qi, qj, qk, ri, rj, rk):
 
 def trans_trapezoid(b=1, n=100):
     a=0
-    const = (b-a)/n
-    dx = const/2
+    ds = (b-a)/n
+    const = ds/2
 
     total = sin(psi(a,q1, q2, q3, r1, r2, r3)) + sin(psi(b,q1, q2, q3, r1, r2, r3))
 
     for i in range(1, n):
-        total += 2*sin(psi(a+i*dx, q1, q2, q3, r1, r2, r3))
+        total += 2*sin(psi(a+i*ds, q1, q2, q3, r1, r2, r3))
 
     return const*total
 
 def long_trapezoid(b=1, n=100):
     a=0
-    const = (b-a)/n
-    dx = const/2
+    ds = (b-a)/n
+    const = ds/2
 
     total = cos(psi(a, q1, q2, q3, r1, r2, r3)) + cos(psi(b, q1, q2, q3, r1, r2, r3))
 
     for i in range(1, n):
-        total += 2*cos(psi(a+i*dx, q1, q2, q3, r1, r2, r3))
+        total += 2*cos(psi(a+i*ds, q1, q2, q3, r1, r2, r3))
 
     return const*total
 
