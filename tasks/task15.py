@@ -53,6 +53,7 @@ for x in xs:
     trans_deflection.append(trans_trapezoid(x))
     long_deflection.append(long_trapezoid(x) - x)
 
+#plot trans deflection
 plt.plot(xs, np.array(trans_deflection))
 plt.xlabel("Position along the beam, x [m]")
 plt.ylabel("Transverse deflection of the beam, w(x) [m]")
@@ -60,6 +61,7 @@ plt.grid(color='k', linestyle='--', linewidth=0.5)
 plt.title("Transverse deflection at various positions along the beam")
 plt.show()
 
+#plot long deflection
 plt.plot(xs, np.array(long_deflection))
 plt.xlabel("Position along the beam, x [m]")
 plt.ylabel("Longitudinal deflection of the beam, u(x) [m]")
@@ -67,6 +69,7 @@ plt.grid(color='k', linestyle='--', linewidth=0.5)
 plt.title("Longitudinal deflection at various positions along the beam")
 plt.show()
 
+#plot overall deflection
 ax = plt.figure().add_subplot(projection='3d')
 ax.plot(xs, long_deflection, trans_deflection, label="overall deflection of the beam")
 ax.set_xlabel("Position along the beam, x [m]")

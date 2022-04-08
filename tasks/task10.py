@@ -163,6 +163,8 @@ def bfgs(e, n, x, A):
     x0 = np.array(x)
     a0 = A
 
+    #implemented psuedocode from chapter 4 of the textbook
+    #replaced the A0 iteration
     while norm > e:
         f1 = f(r1, x0[0], x0[1])
         f2 = f(r2, x0[0], x0[1])

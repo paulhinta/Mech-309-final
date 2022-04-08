@@ -19,6 +19,7 @@ def phi(x, r):
 def psi_h(s, qi, qj, ri, rj):
     return qi*phi(s, ri) + qj*phi(s,rj)
 
+#deflection is an integral function of x in s
 def trans_trapezoid(b=1, n=100):
     a=0
     const = (b-a)/n
@@ -52,6 +53,7 @@ for x in xs:
     trans_deflection.append(trans_trapezoid(x))
     long_deflection.append(long_trapezoid(x) - x)
 
+#plot trans, long, and overall deflections
 plt.plot(xs, np.array(trans_deflection))
 plt.xlabel("Position along the beam, x [m]")
 plt.ylabel("Transverse deflection of the beam, w(x) [m]")

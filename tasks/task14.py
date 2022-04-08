@@ -129,6 +129,7 @@ def bfgs(e, n, x, A):
     x0 = np.array(x)
     a0 = A
 
+    #this code mimics the pseudocode in chapter 4 for broyden's method
     while norm > e:
         f1 = f(r1, x0[0], x0[1], x0[2])
         f2 = f(r2, x0[0], x0[1], x0[2])
@@ -157,6 +158,7 @@ def bfgs(e, n, x, A):
         i32 = (y[2]*y[1])
         i33 = (y[2])**2
 
+        #a0 replacement (iteration) starts here
         inter = np.array([[i11, i12, i13],[i21, i22, i23], [i31, i32, i33]])
 
         term1 = (np.linalg.multi_dot([a0, np.transpose([y]), [y], a0]))/denom
@@ -175,12 +177,14 @@ def bfgs(e, n, x, A):
 
         inter = inter = (np.array([[i11, i12, i13],[i21, i22, i23],[i31, i32, i33]]))/denom
         
+        #a0 matrix is replaced
         a0 = a0 -term1 + inter
 
         norm = np.linalg.norm(y)
 
     return x0
 
+#call the bgfs method
 epsilon, n = 0.001, 1
 x0 = [1.75, -0.8, 0]
 a0 = np.array([[1,0,0],[0,1,0],[0,0,1]])

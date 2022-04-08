@@ -11,6 +11,7 @@ r1 = 1.87527632324985
 '''
 First Integral, steps 1-3
 '''
+#phi and psi functions as defined by the project statement
 def phi(x, r):
     return (sin(r*x) + sinh(r*x) + ((cos(r)+cosh(r))/(sin(r)+sinh(r)))*(cos(r*x)-cosh(r*x)))
 
@@ -23,6 +24,7 @@ def psi_h(x, qi):
 def d2psi_h(x, qi):
     return qi*d2phi(x, r1)
 
+#single integral approximator
 def trapezoid(r, qx, a=0, b=1, m=100):
     dx = (b-a)/m
 
@@ -34,6 +36,7 @@ def trapezoid(r, qx, a=0, b=1, m=100):
     
     return total*dx/2
 
+#slope of the single integral approximator
 def linear_slope(n=100, a=0, b=1):
     def h(x):
         return phi(x, r1)*d2phi(x, r1)
@@ -49,6 +52,7 @@ def linear_slope(n=100, a=0, b=1):
 
     return const*total
 
+#double integral approximator
 def double_int(r, qx, a=0, b=1, ups=1, m=25):
     dx = (b-a)/m
     xs = np.arange(a, b, dx)
@@ -69,9 +73,11 @@ def double_int(r, qx, a=0, b=1, ups=1, m=25):
     ret = 2*sum(total_x) - total_x[0] - total_x[-1]
     return ret*dx/2
 
+#function in equation 2 per project handout
 def f(r, qx):
     return 100*double_int(r, qx) + trapezoid(r, qx)
 
+#g function (for fixed point)
 def g(r, qx):
     return -(100*double_int(r, qx) + trapezoid(r, qx))/(linear_slope())
 
@@ -95,6 +101,7 @@ g1.append(g(r1, q1[-1]+2*lim/n))
 
 f1_p = np.array(f1)
 
+#plot function f(q1) in 1d
 plt.plot(q1, f1_p)
 plt.grid(color='k', linestyle='--', linewidth=0.5)
 plt.title("Plot of f(q_1)")
@@ -118,6 +125,7 @@ plt.show()
 '''
 TASK 7
 '''
+#custom secant function
 def secant(ra, rb, e):
     r = rb - f(r1, rb)*((rb-ra))/(f(r1,rb) - f(r1,ra))
 
@@ -129,6 +137,7 @@ def secant(ra, rb, e):
         r = rb - f(r1, rb)*((rb-ra))/(f(r1,rb) - f(r1,ra))
         steps +=1
 
+    #check how many steps it took
     print("found a solution with error {} in {} steps".format(str(e), str(steps)))
     return [r, steps]
 
@@ -167,15 +176,15 @@ plt.xlabel("Number of trapezoids used")
 plt.show()
 
 #evaluate the rate of convergence of our implementation of the secant method
-eps = np.arange(0.0001, 0.1001, 0.0005)
+eps = np.arange(0.00001, 0.10001, 0.001)
 nsteps = []
 
 for e in eps:
-    nsteps.append(secant(0,0.1,e))
+    nsteps.append(secant(0,0.1,e)[1])
 
 nsteps = np.array(nsteps)
 plt.plot(nsteps, eps, 'r')
-plt.grid(color='k', linestyle='--', linewidth=0.5)
+plt.grid(color='k', linestyle='dotted', linewidth=0.5)
 plt.title("Rate of convergence of error for the secant method in 1D")
 plt.ylabel("Error")
 plt.xlabel("Number of steps to solve")
