@@ -1,9 +1,6 @@
-import sympy as sp
-#NOTED: This is a python math library to represent functions, we will write our own problem solving expressions
-#from sympy.plotting import plot
-from sympy import cos, cosh, sin, sinh
+from numpy import cos, cosh, sin, sinh
 import numpy as np
-import matplotlib.pyplot as mplot
+import matplotlib.pyplot as plt
 '''
 TASK 3
 '''
@@ -12,16 +9,14 @@ def newton(f,df,x_0,eps):
     xn = x_0
 
     while True:
-        fxn = f.subs(x,xn)
+        fxn = f(xn)
         if abs(fxn) < eps:
             return xn
-        dfxn = df.subs(x,xn)
+        dfxn = df(xn)
         if dfxn == 0:
             print('Zero derivative -> no solution')
             return None
         xn = xn - fxn/dfxn
-
-x = sp.Symbol("x")
 
 #math functions of f & df/dx
 def f(r):
@@ -33,8 +28,8 @@ def df(r):
 #input parameters for newton's method
 eps = 0.001
 
-r1 = newton(f(x), df(x), 1.5, eps)          #r1 = 1.87527632324985
-r2 = newton(f(x), df(x), 4.25, eps)         #r2 = 4.69409122046058
+r1 = newton(f, df, 1.5, eps)          #r1 = 1.87527632324985
+r2 = newton(f, df, 4.25, eps)         #r2 = 4.69409122046058
 
 print("r_1: {:.3f}".format(r1))
 print("r_2: {:.3f}".format(r2))
@@ -57,25 +52,27 @@ p1 = np.array(p1)
 p2 = np.array(p2)
 
 #plot phi_1
-mplot.plot(x, p1, 'k')
-mplot.title("Plot of phi_1")
-mplot.show()
+plt.plot(x, p1)
+plt.title("Plot of phi_1")
+plt.grid(color='k', linestyle='--', linewidth=0.5)
+plt.show()
 
 #plot phi_2
-mplot.plot(x, p2, 'b')
-mplot.title("Plot of phi_2")
+plt.plot(x, p2)
+plt.title("Plot of phi_2")
+plt.grid(color='k', linestyle='--', linewidth=0.5)
 #max point of phi_2 (for clarity)
 xmax = round(x[np.argmax(p2)], 2)
 ymax = round(p2.max(), 6)
 def annot_max(x,y, ax=None):
     text= "Max point: x={:.2f}, y={:.6f}".format(xmax, ymax)
     if not ax:
-        ax=mplot.gca()
+        ax=plt.gca()
     bbox_props = dict(boxstyle="square,pad=0.3", fc="w", ec="k", lw=0.72)
     arrowprops=dict(arrowstyle="->",connectionstyle="angle,angleA=0,angleB=60")
     kw = dict(xycoords='data',textcoords="axes fraction",
               arrowprops=arrowprops, bbox=bbox_props, ha="right", va="top")
     ax.annotate(text, xy=(xmax, ymax), xytext=(0.94,0.96), **kw)
 annot_max(x,p2)
-mplot.ylim((-10000,1000))
-mplot.show()
+plt.ylim((-10000,1000))
+plt.show()

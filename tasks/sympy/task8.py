@@ -14,7 +14,7 @@ q1 = 4.29105998838015       #3.27
 def psi(x):
     return q1*(sin(r1*x) + sinh(r1*x) + ((cos(r1)+cosh(r1))/(sin(r1)+sinh(r1)))*(cos(r1*x)-cosh(r1*x)))
 
-def trans_trapezoid(n=100, a=0, b=1):
+def trans_trapezoid(n=10, a=0, b=1):
     const = (b-a)/(2*n)
 
     dx = (b-a)/(n)
@@ -26,7 +26,7 @@ def trans_trapezoid(n=100, a=0, b=1):
 
     return const*total
 
-def long_trapezoid(n=100, a=0, b=1):
+def long_trapezoid(n=10, a=0, b=1):
     const = (b-a)/(2*n)
 
     dx = (b-a)/(n)

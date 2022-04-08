@@ -132,6 +132,7 @@ for i in range(int(n/2)-1):
         x7.append(q+j*dq)
         y7.append(y0+j*dq*sl)
 
+#interpolation plot looks almost the same as the previous point
 plt.plot(np.array(x7), np.array(y7))
 plt.grid(color='k', linestyle='--', linewidth=0.5)
 plt.show()
@@ -160,7 +161,6 @@ def secant(r0, r1, e):
         else:
             r1 = min(enumerate(x7), key=lambda x: abs(r - x[1]))[1]
         
-
         if r0 in x7:
             r0_ind = x7.index(r0)
         else: 
