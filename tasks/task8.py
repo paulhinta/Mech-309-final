@@ -7,7 +7,7 @@ import time
 TASK 8
 '''
 r1 = 1.87527632324985
-q1 = 4.299218368349152
+q1 = 4.277993721123706
 
 #r1 and q1 derived in previous task
 
@@ -67,3 +67,4 @@ ax.set_zlabel("w(x) [m]")
 ax.set_ylabel("u(x) [m]")
 ax.legend()
 plt.show()
+
